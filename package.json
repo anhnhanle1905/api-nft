@@ -1,21 +1,26 @@
 {
-  "name": "learnnode",
+  "name": "api-nft",
   "version": "1.0.0",
-  "description": "learn nodejs",
+  "description": "Api NFT",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node --experimental-json-modules index.js",
+    "dev": "env-cmd -f ./config/dev.env nodemon --experimental-json-modules index.js"
   },
-  "author": "nhanle",
+  "author": "NhanLe",
   "license": "ISC",
   "dependencies": {
-    "@alch/alchemy-web3": "^1.2.4",
-    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.2",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.0",
-    "express": "^4.17.1",
-    "express-unless": "^1.0.0",
-    "jsonwebtoken": "^8.5.1",
-    "nodemon": "^2.0.14",
-    "otp-generator": "^3.0.0"
+    "express": "^4.17.3",
+    "mongoose": "^6.2.7",
+    "router": "^1.3.6",
+    "web3": "^1.7.1"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0",
+    "nodemon": "^2.0.15"
   }
 }
