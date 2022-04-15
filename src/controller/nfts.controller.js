@@ -46,11 +46,7 @@ async function mintNFT(tokenURIs) {
         signedTx.rawTransaction,
         function (err, hash) {
           if (!err) {
-            console.log(
-              "The hash of your transaction is: ",
-              hash,
-              `\nCheck your transaction:  https://mumbai.polygonscan.com/tx/${hash}`
-            );
+            console.log("The hash of your transaction is: ", hash);
           } else {
             console.log(
               "Something went wrong when submitting your transaction:",
@@ -69,8 +65,58 @@ export const mint = async (req, res) => {
   const { arrMetadata } = req.body;
 
   try {
-    mintNFT(arrMetadata);
-    res.status(200).json({ message: `Oke` });
+    await mintNFT(arrMetadata);
+    res.status(200).json({ message: `Mint NFT success` });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+// transfer
+async function transfer(tokenID) {
+  const nonce = await web3.eth.getTransactionCount(PUBLIC_KEY, "latest"); //get latest nonce
+  //the transaction
+  const tx = {
+    from: PUBLIC_KEY,
+    to: contractAddress,
+    nonce: nonce,
+    gas: 500000,
+    data: nftContract.methods
+      .transfer(
+        "0xFc704cB253A586A6539f29705ecC5FAeEa3e2FB3",
+        "0x94516F310cB119BD79E24eA969b8374025cA9D48",
+        tokenID
+      )
+      .encodeABI(),
+  };
+  const signPromise = web3.eth.accounts.signTransaction(tx, PRIVATE_KEY);
+  signPromise
+    .then((signedTx) => {
+      web3.eth.sendSignedTransaction(
+        signedTx.rawTransaction,
+        function (err, hash) {
+          if (!err) {
+            console.log("The hash of your transaction is: ", hash);
+          } else {
+            console.log(
+              "Something went wrong when submitting your transaction:",
+              err
+            );
+          }
+        }
+      );
+    })
+    .catch((err) => {
+      console.log(" Promise failed:", err);
+    });
+}
+
+export const transferNft = async (req, res) => {
+  const { tokenId } = req.body;
+
+  try {
+    await transfer(tokenId);
+    res.status(200).json({ message: `Transfer NFT success` });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
